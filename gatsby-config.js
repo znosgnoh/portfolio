@@ -4,7 +4,7 @@ module.exports = {
   siteMetadata: {
     title: 'Portfolio | Nosgnoh',
     description:
-      'Welcome to my world! I\'m Nosgnoh, a dedicated software engineer with a passion for coding, a thirst for knowledge, and a love for exploration. Let\'s dive into the exciting world of coding, discover innovative technologies, and embrace the wonders of travel together.',
+      'Welcome to my digital home! I\'m Nosgnoh, a dedicated software engineer with a passion for coding, a thirst for knowledge, and a love for exploration. Let\'s dive into the exciting world of coding, discover innovative technologies, and embrace the wonders of travel together.',
     siteUrl: 'https://nosgnoh.vercel.app', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '@lone_Musk',

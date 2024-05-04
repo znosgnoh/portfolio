@@ -134,15 +134,14 @@ const About = () => {
       <div className="inner">
         <StyledText>
           <div>
-            <p>A Passionate Software Engineer and Adventurous Explorer.</p>
+            <p>Hey there!</p>
             <p>
-              Hello, I'm Nosgnoh, a software engineer with a burning passion for coding and an
-              insatiable curiosity for the world. With a keen eye for innovation and a love for
-              learning, I constantly strive to push the boundaries of what's possible in the realm
-              of technology. But beyond the screen, I am also an intrepid explorer, embarking on
-              thrilling adventures that feed my soul and inspire my creativity. Join me on this
-              exciting journey as I showcase my coding prowess and share my remarkable travel
-              experiences. Welcome to my portfolio!
+              I'm Nosgnoh, a passionate software engineer, amateur triathlete, photographer, and
+              backpacker. By day, I'm immersed in the world of coding, building elegant solutions to
+              complex problems. Outside of work, I'm constantly training for triathlons, capturing
+              moments through my camera lens, and exploring the world with nothing but a backpack
+              and a sense of adventure. Join me on my journey as I code, race, capture, and explore
+              the world one adventure at a time.
             </p>
           </div>
 

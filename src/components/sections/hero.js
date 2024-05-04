@@ -60,12 +60,12 @@ const Hero = () => {
 
   const one = <h1>Hi, my name is</h1>;
   const two = <h2 className="big-heading">Nosgnoh.</h2>;
-  const three = <h3 className="big-heading">I design and code simple things.</h3>;
+  const three = <h3 className="big-heading">I'm TRI-ing</h3>;
   const four = (
     <>
       <p>
-        Welcome to my world! I'm Nosgnoh, a dedicated software engineer with a passion for coding, a
-        thirst for knowledge, and a love for exploration.
+        Welcome to my digital home! I'm Nosgnoh, an experienced amateur triathlete temporarily works
+        as software engineer.
       </p>
       <p>
         Let's dive into the exciting world of developing, discover innovative technologies, and
