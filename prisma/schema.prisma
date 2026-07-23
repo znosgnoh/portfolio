@@ -62,15 +62,16 @@ model Photo {
 }
 
 model Album {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String
-  slug          String   @unique
+  slug          String    @unique
   description   String?
   coverPhotoId  String?
-  driveFolderId String?  @unique
+  driveFolderId String?   @unique
+  lastSyncedAt  DateTime?
   photos        Photo[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model StoryEvent {

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, createRef } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { navLinks } from '@/config';
+import { navLinks, type NavLink } from '@/config';
 import { loaderDelay } from '@/utils';
 import { useScrollDirection, usePrefersReducedMotion } from '@/hooks';
 import { Icon } from '@/components/icons';
@@ -100,14 +100,21 @@ const StyledLinks = styled.div`
     margin: 0;
     list-style: none;
 
-    li {
+    & > li {
       margin: 0 5px;
       position: relative;
       counter-increment: item 1;
       font-size: var(--fz-xs);
 
-      a {
+      & > a,
+      & > .nav-parent {
         padding: 10px;
+        display: inline-block;
+        color: inherit;
+        background: none;
+        border: 0;
+        font: inherit;
+        cursor: pointer;
 
         &:before {
           content: '0' counter(item) '.';
@@ -115,6 +122,55 @@ const StyledLinks = styled.div`
           color: var(--green);
           font-size: var(--fz-xxs);
           text-align: right;
+        }
+      }
+
+      &.has-submenu:hover .submenu,
+      &.has-submenu:focus-within .submenu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .submenu {
+    ${({ theme }) => theme.mixins.boxShadow};
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 160px;
+    padding: 10px 0;
+    list-style: none;
+    margin: 0;
+    background-color: var(--light-navy);
+    border: 1px solid var(--lightest-navy);
+    border-radius: var(--border-radius);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: var(--transition);
+    z-index: 20;
+
+    li {
+      margin: 0;
+      counter-increment: none;
+      font-size: var(--fz-xs);
+
+      a {
+        display: block;
+        padding: 8px 16px;
+        color: var(--light-slate);
+        white-space: nowrap;
+
+        &:before {
+          content: none;
+        }
+
+        &:hover,
+        &:focus {
+          color: var(--green);
+          background-color: var(--green-tint);
         }
       }
     }
@@ -126,6 +182,33 @@ const StyledLinks = styled.div`
     font-size: var(--fz-xs);
   }
 `;
+
+function NavItem({ link }: { link: NavLink }) {
+  if (link.subLinks?.length) {
+    return (
+      <li className="has-submenu">
+        <button type="button" className="nav-parent" aria-haspopup="true">
+          {link.name}
+        </button>
+        <ul className="submenu" role="menu">
+          {link.subLinks.map(sub => (
+            <li key={sub.url} role="none">
+              <Link href={sub.url} role="menuitem">
+                {sub.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </li>
+    );
+  }
+
+  return (
+    <li>
+      <Link href={link.url || '/'}>{link.name}</Link>
+    </li>
+  );
+}
 
 const Nav: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -183,16 +266,14 @@ const Nav: React.FC = () => {
           <ol>
             {prefersReducedMotion ? (
               <>
-                {navLinks.map(({ url, name }, i) => (
-                  <li key={i}>
-                    <Link href={url}>{name}</Link>
-                  </li>
+                {navLinks.map((link, i) => (
+                  <NavItem key={i} link={link} />
                 ))}
               </>
             ) : (
               <TransitionGroup component={null}>
                 {isMounted &&
-                  navLinks.map(({ url, name }, i) => (
+                  navLinks.map((link, i) => (
                     <CSSTransition
                       key={i}
                       nodeRef={linkRefs.current[i]}
@@ -200,8 +281,26 @@ const Nav: React.FC = () => {
                       timeout={timeout}>
                       <li
                         ref={linkRefs.current[i]}
-                        style={{ transitionDelay: `${(i + 1) * 100}ms` }}>
-                        <Link href={url}>{name}</Link>
+                        style={{ transitionDelay: `${(i + 1) * 100}ms` }}
+                        className={link.subLinks?.length ? 'has-submenu' : undefined}>
+                        {link.subLinks?.length ? (
+                          <>
+                            <button type="button" className="nav-parent" aria-haspopup="true">
+                              {link.name}
+                            </button>
+                            <ul className="submenu" role="menu">
+                              {link.subLinks.map(sub => (
+                                <li key={sub.url} role="none">
+                                  <Link href={sub.url} role="menuitem">
+                                    {sub.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        ) : (
+                          <Link href={link.url || '/'}>{link.name}</Link>
+                        )}
                       </li>
                     </CSSTransition>
                   ))}

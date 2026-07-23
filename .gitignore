@@ -38,3 +38,4 @@ src/generated/prisma/
 .cache
 
 .vscode/
+.env*

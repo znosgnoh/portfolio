@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { MOCK_THOUGHTS } from '@/lib/mock-data';
 import ThoughtsPage from './ThoughtsPage';
 
 export const metadata = {
@@ -7,16 +8,19 @@ export const metadata = {
 };
 
 export default async function Page() {
-  let thoughts: any[] = [];
+  let thoughts = MOCK_THOUGHTS;
   try {
-    thoughts = await prisma.thought.findMany({
+    const rows = await prisma.thought.findMany({
       where: { isPublic: true },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });
+    if (rows.length > 0) {
+      thoughts = JSON.parse(JSON.stringify(rows));
+    }
   } catch {
-    // DB not connected yet
+    // DB not connected — show mock UI data
   }
 
-  return <ThoughtsPage thoughts={JSON.parse(JSON.stringify(thoughts))} />;
+  return <ThoughtsPage thoughts={thoughts} />;
 }

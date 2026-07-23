@@ -121,7 +121,7 @@ const StyledSidebar = styled.aside<{ menuOpen: boolean }>`
     list-style: none;
     width: 100%;
 
-    li {
+    & > li {
       position: relative;
       margin: 0 auto 20px;
       counter-increment: item 1;
@@ -140,9 +140,41 @@ const StyledSidebar = styled.aside<{ menuOpen: boolean }>`
       }
     }
 
-    a {
+    a,
+    .nav-parent {
       width: 100%;
       padding: 3px 20px 20px;
+      color: inherit;
+      background: none;
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .submenu {
+      list-style: none;
+      padding: 0 0 10px;
+      margin: -10px 0 0;
+
+      li {
+        margin: 0;
+        counter-increment: none;
+        font-size: var(--fz-sm);
+
+        &:before {
+          content: none;
+        }
+
+        a {
+          padding: 8px 20px;
+          color: var(--slate);
+
+          &:hover,
+          &:focus {
+            color: var(--green);
+          }
+        }
+      }
     }
   }
 
@@ -156,6 +188,7 @@ const StyledSidebar = styled.aside<{ menuOpen: boolean }>`
 
 const Menu: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -188,6 +221,7 @@ const Menu: React.FC = () => {
 
   useEffect(() => {
     document.body.className = menuOpen ? 'blur' : '';
+    if (!menuOpen) setOpenSubmenu(null);
   }, [menuOpen]);
 
   return (
@@ -207,11 +241,36 @@ const Menu: React.FC = () => {
           <nav ref={navRef}>
             {navLinks && (
               <ol>
-                {navLinks.map(({ url, name }, i) => (
+                {navLinks.map(({ url, name, subLinks }, i) => (
                   <li key={i}>
-                    <Link href={url} onClick={() => setMenuOpen(false)}>
-                      {name}
-                    </Link>
+                    {subLinks?.length ? (
+                      <>
+                        <button
+                          type="button"
+                          className="nav-parent"
+                          aria-expanded={openSubmenu === name}
+                          onClick={() =>
+                            setOpenSubmenu(prev => (prev === name ? null : name))
+                          }>
+                          {name}
+                        </button>
+                        {openSubmenu === name && (
+                          <ul className="submenu">
+                            {subLinks.map(sub => (
+                              <li key={sub.url}>
+                                <Link href={sub.url} onClick={() => setMenuOpen(false)}>
+                                  {sub.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </>
+                    ) : (
+                      <Link href={url || '/'} onClick={() => setMenuOpen(false)}>
+                        {name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ol>

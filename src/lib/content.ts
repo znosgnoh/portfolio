@@ -9,6 +9,7 @@ const contentDirectory = path.join(process.cwd(), 'content');
 
 export interface FrontMatter {
   title?: string;
+  description?: string;
   date?: string;
   slug?: string;
   draft?: boolean;

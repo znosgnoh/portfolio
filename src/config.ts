@@ -6,15 +6,31 @@ export const socialMedia = [
   { name: 'Linkedin', url: 'https://www.linkedin.com/in/nosgnoh' },
 ];
 
-export const navLinks = [
+export type NavSubLink = {
+  name: string;
+  url: string;
+};
+
+export type NavLink = {
+  name: string;
+  url?: string;
+  subLinks?: NavSubLink[];
+};
+
+export const navLinks: NavLink[] = [
   { name: 'About', url: '/#about' },
   { name: 'Experience', url: '/#jobs' },
   { name: 'Work', url: '/#projects' },
   { name: 'Contact', url: '/#contact' },
-  { name: 'Blog', url: '/pensieve' },
-  { name: 'Thoughts', url: '/thoughts' },
-  { name: 'Photos', url: '/photos' },
-  { name: 'Story', url: '/story' },
+  {
+    name: '#MeMyselfAndI',
+    subLinks: [
+      { name: 'Blog', url: '/pensieve' },
+      { name: 'Thoughts', url: '/thoughts' },
+      { name: 'Photos', url: '/photos' },
+      { name: 'Story', url: '/story' },
+    ],
+  },
 ];
 
 export const colors = {

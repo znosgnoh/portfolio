@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { MOCK_STORY_EVENTS } from '@/lib/mock-data';
 import StoryPage from './StoryPage';
 
 export const metadata = {
@@ -7,14 +8,17 @@ export const metadata = {
 };
 
 export default async function Page() {
-  let events: any[] = [];
+  let events = MOCK_STORY_EVENTS;
   try {
-    events = await prisma.storyEvent.findMany({
+    const rows = await prisma.storyEvent.findMany({
       orderBy: { date: 'desc' },
     });
+    if (rows.length > 0) {
+      events = JSON.parse(JSON.stringify(rows));
+    }
   } catch {
-    // DB not connected yet
+    // DB not connected — show mock UI data
   }
 
-  return <StoryPage events={JSON.parse(JSON.stringify(events))} />;
+  return <StoryPage events={events} />;
 }

@@ -116,9 +116,8 @@ const PhotosPage: React.FC<PhotosPageProps> = ({ albums }) => {
                       <h3>{album.name}</h3>
                       {album.description && <p>{album.description}</p>}
                       <span className="photo-count">
-                        {album.photos.length}{' '}
-                        {album.photos.length === 1 ? 'photo' : 'photos'}
-                      </span>
+                {album.photos.length} {album.photos.length === 1 ? 'photo' : 'photos'}
+              </span>
                     </div>
                   </StyledAlbumCard>
                 </Link>

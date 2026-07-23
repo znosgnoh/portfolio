@@ -85,39 +85,49 @@ const PensievePage: React.FC<PensievePageProps> = ({ posts, tags }) => {
           <p className="subtitle">A collection of memories and writings</p>
         </header>
 
-        <div className="tag-list">
-          {Object.entries(tags)
-            .sort((a, b) => b[1] - a[1])
-            .map(([tag, count]) => (
-              <Link key={tag} href={`/pensieve/tags/${tag}`}>
-                #{tag} ({count})
-              </Link>
-            ))}
-        </div>
+        {Object.keys(tags).length > 0 && (
+          <div className="tag-list">
+            {Object.entries(tags)
+              .sort((a, b) => b[1] - a[1])
+              .map(([tag, count]) => (
+                <Link key={tag} href={`/pensieve/tags/${tag}`}>
+                  #{tag} ({count})
+                </Link>
+              ))}
+          </div>
+        )}
 
-        <StyledPostList>
-          {posts.map(post => (
-            <li key={post.slug}>
-              <Link href={`/pensieve/${post.slug}`}>
-                <h3>{post.frontmatter.title}</h3>
-                <span className="post-meta">
-                  {post.frontmatter.date && new Date(post.frontmatter.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
-                {post.frontmatter.tags && (
+        {posts.length === 0 ? (
+          <p style={{ textAlign: 'center', color: 'var(--slate)' }}>
+            No posts yet. Check back soon!
+          </p>
+        ) : (
+          <StyledPostList>
+            {posts.map(post => (
+              <li key={post.slug}>
+                <Link href={`/pensieve/${post.slug}`}>
+                  <h3>{post.frontmatter.title}</h3>
+                </Link>
+                <div className="post-meta">
+                  {post.frontmatter.date &&
+                    new Date(post.frontmatter.date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                </div>
+                {post.frontmatter.description && <p>{post.frontmatter.description}</p>}
+                {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
                   <div className="tags">
                     {post.frontmatter.tags.map(tag => (
                       <span key={tag}>#{tag}</span>
                     ))}
                   </div>
                 )}
-              </Link>
-            </li>
-          ))}
-        </StyledPostList>
+              </li>
+            ))}
+          </StyledPostList>
+        )}
       </StyledMainContainer>
     </Layout>
   );

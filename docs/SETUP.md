@@ -16,6 +16,28 @@ This guide walks you through setting up **PostgreSQL**, **NextAuth**, and **Goog
 
 ## 1. PostgreSQL Database
 
+### Recommended: Neon on Vercel (production + local via env pull)
+
+1. In the Vercel dashboard open project **portfolio** → **Storage** → create **Neon Postgres**, or run after CLI login:
+   ```bash
+   vercel login
+   vercel link   # project: portfolio
+   vercel install neon
+   ```
+2. Connect the store to **Development / Preview / Production**.
+3. Pull secrets locally and map Prisma names:
+   ```bash
+   vercel env pull .env.local
+   ```
+   Ensure:
+   - `DATABASE_URL` = pooled Neon URL (runtime)
+   - `DIRECT_URL` = unpooled / `DATABASE_URL_UNPOOLED` (migrations / `prisma db push`)
+4. Apply schema + seed:
+   ```bash
+   npx prisma db push
+   npx prisma db seed
+   ```
+
 ### Option A: Install PostgreSQL locally (macOS)
 
 ```bash
@@ -194,13 +216,23 @@ GOOGLE_DRIVE_FOLDER_ID="your-folder-id-here"
 > - In the downloaded JSON file, the key already has `\n` characters — copy it as-is
 > - On Vercel, paste the key exactly as it appears in the JSON (with `\n` literals)
 
+### Recommended Drive layout
+
+```
+Nosgnoh.life/          ← GOOGLE_DRIVE_FOLDER_ID (root)
+  Đà Nẵng 2026/        ← album folder
+  Race Day/
+  Backpack Notes/
+```
+
+Share the **root** folder (or each album) with the service account as **Viewer**.
+
 ### How it works
 
-- Admin goes to `/admin/photos` → creates an album (optionally links a Drive folder ID)
-- Clicks **"Sync from Drive"** → calls `POST /api/photos/sync`
-- The API uses the service account to list images in the folder
-- Photos are saved to the database with their Drive file IDs
-- Public gallery displays images via `https://drive.google.com/uc?export=view&id={fileId}`
+- Admin goes to `/admin/photos` → **Discover albums from Drive** (`POST /api/photos/discover`) upserts albums from root child folders
+- **Sync all** / per-album **Sync from Drive** (`POST /api/photos/sync`) upserts photos by `driveFileId` and sets `lastSyncedAt`
+- Public `/photos` pages read **Postgres only** (mock fallback only in development when empty)
+- Image URLs stay on Drive (`https://drive.google.com/uc?export=view&id={fileId}`)
 
 ---
 
