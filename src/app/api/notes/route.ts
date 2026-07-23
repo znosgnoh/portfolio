@@ -5,7 +5,9 @@ import { prisma } from '@/lib/prisma';
 import slugify from 'slugify';
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
   const notes = await prisma.note.findMany({
+    where: session?.user ? undefined : { isPublic: true },
     orderBy: { updatedAt: 'desc' },
   });
   return NextResponse.json(notes);
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
       content: content.trim(),
       tags: Array.isArray(tags) ? tags : [],
       isPublic: published !== false,
-      authorId: (session.user as any).id,
+      authorId: (session.user as { id?: string }).id!,
     },
   });
 

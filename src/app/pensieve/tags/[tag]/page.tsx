@@ -1,4 +1,4 @@
-import { getPosts, getAllTags } from '@/lib/content';
+import { getPosts, getAllTags, toClientContent } from '@/lib/content';
 import TagPage from './TagPage';
 
 export async function generateStaticParams() {
@@ -7,17 +7,27 @@ export async function generateStaticParams() {
   return Object.keys(tags).map(tag => ({ tag }));
 }
 
-export function generateMetadata({ params }: { params: { tag: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tag: string }>;
+}) {
+  const { tag } = await params;
   return {
-    title: `#${params.tag} | Pensieve`,
-    description: `Posts tagged with ${params.tag}`,
+    title: `#${tag} | Pensieve`,
+    description: `Posts tagged with ${tag}`,
   };
 }
 
-export default async function TagRoute({ params }: { params: { tag: string } }) {
-  const posts = (await getPosts()).filter(
-    post => post.frontmatter.tags?.includes(params.tag)
+export default async function TagRoute({
+  params,
+}: {
+  params: Promise<{ tag: string }>;
+}) {
+  const { tag } = await params;
+  const posts = (await getPosts()).filter(post =>
+    post.frontmatter.tags?.includes(tag)
   );
 
-  return <TagPage tag={params.tag} posts={JSON.parse(JSON.stringify(posts))} />;
+  return <TagPage tag={tag} posts={posts.map(toClientContent)} />;
 }

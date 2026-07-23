@@ -9,17 +9,26 @@ export async function generateStaticParams() {
       where: { isPublic: true },
       select: { slug: true },
     });
-  } catch (e) {}
+  } catch {
+    // DB unavailable at build time
+  }
   return notes.map(n => ({ slug: n.slug }));
 }
 
-export default async function NotePage({ params }: { params: { slug: string } }) {
+export default async function NotePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   let note = null;
   try {
     note = await prisma.note.findUnique({
-      where: { slug: params.slug },
+      where: { slug },
     });
-  } catch (e) {}
+  } catch {
+    // DB unavailable
+  }
 
   if (!note || !note.isPublic) notFound();
 

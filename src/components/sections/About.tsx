@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
 import styled from 'styled-components';
 import { srConfig } from '@/config';
 import { usePrefersReducedMotion } from '@/hooks';
+import SafeImage from '@/components/SafeImage';
 
 const StyledAboutSection = styled.section`
   max-width: 900px;
@@ -132,12 +132,13 @@ const About: React.FC = () => {
   }, []);
 
   const skills = [
-    'JavaScript (ES6+)',
-    'TypeScript',
+    'NodeJS',
+    'Angular',
     'React',
-    'Next.js',
-    'Node.js',
-    'Python',
+    'AWS',
+    'MongoDB',
+    'Docker',
+    'CI/CD',
   ];
 
   return (
@@ -147,17 +148,15 @@ const About: React.FC = () => {
       <div className="inner">
         <StyledText>
           <div>
-            <p>
-              Hello! My name is Nosgnoh and I enjoy creating things that live on the internet.
-              My interest in web development started back in 2012 when I decided to try editing
-              custom Tumblr themes — turns out hacking together a custom reblog button taught me
-              a lot about HTML &amp; CSS!
-            </p>
+            <p>Hey there!</p>
 
             <p>
-              Fast-forward to today, and I&apos;ve had the privilege of working at various companies.
-              My main focus these days is building accessible, inclusive products and digital
-              experiences.
+              I&apos;m Nosgnoh, a passionate software engineer, amateur triathlete, photographer, and
+              backpacker. By day, I&apos;m immersed in the world of coding, building elegant solutions
+              to complex problems. Outside of work, I&apos;m constantly training for triathlons,
+              capturing moments through my camera lens, and exploring the world with nothing but a
+              backpack and a sense of adventure. Join me on my journey as I code, race, capture, and
+              explore the world one adventure at a time.
             </p>
 
             <p>Here are a few technologies I&apos;ve been working with recently:</p>
@@ -172,14 +171,16 @@ const About: React.FC = () => {
 
         <StyledPic>
           <div className="wrapper">
-            <Image
+            <SafeImage
               className="img"
               src="/images/me.jpg"
               width={500}
               height={500}
-              quality={95}
+              quality={85}
+              sizes="(max-width: 768px) 70vw, 300px"
               alt="Headshot"
               priority
+              placeholderLabel="Portrait"
             />
           </div>
         </StyledPic>

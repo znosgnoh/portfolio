@@ -1,4 +1,4 @@
-import { getJobs, getFeaturedProjects, getProjects } from '@/lib/content';
+import { getJobs, getFeaturedProjects, getProjects, toClientContent } from '@/lib/content';
 import HomePage from './HomePage';
 
 export default async function Page() {
@@ -8,5 +8,11 @@ export default async function Page() {
     getProjects(),
   ]);
 
-  return <HomePage jobs={jobs} featuredProjects={featuredProjects} projects={projects} />;
+  return (
+    <HomePage
+      jobs={jobs.map(toClientContent)}
+      featuredProjects={featuredProjects.map(toClientContent)}
+      projects={projects.map(toClientContent)}
+    />
+  );
 }

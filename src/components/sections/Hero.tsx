@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, createRef } from 'react';
 import styled from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { navDelay, loaderDelay } from '@/utils';
@@ -38,6 +38,10 @@ const StyledHeroSection = styled.section`
   p {
     margin: 20px 0 0;
     max-width: 540px;
+
+    & + p {
+      margin-top: 15px;
+    }
   }
 
   .email-link {
@@ -49,6 +53,9 @@ const StyledHeroSection = styled.section`
 const Hero: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const itemRefs = useRef(
+    Array.from({ length: 5 }, () => createRef<HTMLDivElement>())
+  );
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -57,20 +64,26 @@ const Hero: React.FC = () => {
     }
     const timeout = setTimeout(() => setIsMounted(true), navDelay);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [prefersReducedMotion]);
 
   const one = <h1>Hi, my name is</h1>;
   const two = <h2 className="big-heading">Nosgnoh.</h2>;
-  const three = <h3 className="big-heading">I build things for the web.</h3>;
+  const three = <h3 className="big-heading">I&apos;m TRI-ing</h3>;
   const four = (
-    <p>
-      I&apos;m a software engineer specializing in building exceptional digital experiences.
-      Currently, I&apos;m focused on building accessible, human-centered products.
-    </p>
+    <>
+      <p>
+        Welcome to my digital home! I&apos;m Nosgnoh, an experienced amateur triathlete who
+        temporarily works as a software engineer.
+      </p>
+      <p>
+        Let&apos;s dive into the exciting world of developing, discover innovative technologies, and
+        embrace the wonders of travel together.
+      </p>
+    </>
   );
   const five = (
     <a className="email-link" href="mailto:nosgnohz@gmail.com" target="_blank" rel="noreferrer">
-      Get In Touch
+      Contact me
     </a>
   );
 
@@ -88,8 +101,16 @@ const Hero: React.FC = () => {
         <TransitionGroup component={null}>
           {isMounted &&
             items.map((item, i) => (
-              <CSSTransition key={i} classNames="fadeup" timeout={loaderDelay}>
-                <div style={{ transitionDelay: `${i * 100}ms` }}>{item}</div>
+              <CSSTransition
+                key={i}
+                nodeRef={itemRefs.current[i]}
+                classNames="fadeup"
+                timeout={loaderDelay}>
+                <div
+                  ref={itemRefs.current[i]}
+                  style={{ transitionDelay: `${i * 100}ms` }}>
+                  {item}
+                </div>
               </CSSTransition>
             ))}
         </TransitionGroup>

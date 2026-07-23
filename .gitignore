@@ -29,16 +29,12 @@ npm-debug.log*
 
 # prisma
 prisma/migrations/
+src/generated/prisma/
 
 # typescript
 *.tsbuildinfo
 
-# legacy
+# misc legacy caches
 .cache
-public
-
-# Build directory
-/public
-.DS_Store
 
 .vscode/

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { socialMedia } from '@/config';
@@ -68,6 +68,7 @@ const StyledSideElement = styled.div<{ orientation: 'left' | 'right' }>`
 const Social: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const nodeRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -76,7 +77,7 @@ const Social: React.FC = () => {
     }
     const timeout = setTimeout(() => setIsMounted(true), loaderDelay);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <StyledSideElement orientation="left">
@@ -93,8 +94,8 @@ const Social: React.FC = () => {
       ) : (
         <TransitionGroup component={null}>
           {isMounted && (
-            <CSSTransition classNames="fade" timeout={loaderDelay}>
-              <StyledSocialList>
+            <CSSTransition nodeRef={nodeRef} classNames="fade" timeout={loaderDelay}>
+              <StyledSocialList ref={nodeRef}>
                 {socialMedia.map(({ url, name }) => (
                   <li key={name}>
                     <a href={url} aria-label={name} target="_blank" rel="noreferrer">

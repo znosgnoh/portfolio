@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import Layout from '@/components/Layout';
-import { ContentItem } from '@/lib/content';
+import { ClientContentItem } from '@/lib/content';
 
 const StyledPostContainer = styled.main`
   .post-header {
@@ -89,7 +89,7 @@ const StyledPostContainer = styled.main`
 `;
 
 interface PostPageProps {
-  post: ContentItem;
+  post: ClientContentItem;
 }
 
 const PostPage: React.FC<PostPageProps> = ({ post }) => {

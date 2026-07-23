@@ -7,7 +7,7 @@ import Layout from '@/components/Layout';
 import { IconGitHub, IconExternal } from '@/components/icons';
 import { usePrefersReducedMotion } from '@/hooks';
 import { srConfig } from '@/config';
-import { ContentItem } from '@/lib/content';
+import { ClientContentItem } from '@/lib/content';
 
 const StyledTableContainer = styled.div`
   margin: 100px -20px;
@@ -133,7 +133,7 @@ const StyledTableContainer = styled.div`
 `;
 
 interface ArchivePageProps {
-  projects: ContentItem[];
+  projects: ClientContentItem[];
 }
 
 const ArchivePage: React.FC<ArchivePageProps> = ({ projects }) => {

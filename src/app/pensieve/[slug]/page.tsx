@@ -1,4 +1,4 @@
-import { getPostBySlug, getPosts } from '@/lib/content';
+import { getPostBySlug, getPosts, toClientContent } from '@/lib/content';
 import { notFound } from 'next/navigation';
 import PostPage from './PostPage';
 
@@ -7,9 +7,14 @@ export async function generateStaticParams() {
   return posts.map(post => ({ slug: post.slug }));
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  return <PostPage post={JSON.parse(JSON.stringify(post))} />;
+  return <PostPage post={toClientContent(post)} />;
 }

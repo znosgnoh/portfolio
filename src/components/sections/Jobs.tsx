@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { srConfig } from '@/config';
 import { usePrefersReducedMotion } from '@/hooks';
 import { KEY_CODES } from '@/utils';
-import { ContentItem } from '@/lib/content';
+import { ClientContentItem } from '@/lib/content';
 
 const StyledJobsSection = styled.section`
   max-width: 700px;
@@ -145,7 +145,7 @@ const StyledTabPanel = styled.div`
 `;
 
 interface JobsProps {
-  jobs: ContentItem[];
+  jobs: ClientContentItem[];
 }
 
 const Jobs: React.FC<JobsProps> = ({ jobs }) => {

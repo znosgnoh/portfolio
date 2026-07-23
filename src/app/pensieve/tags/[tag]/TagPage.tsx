@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import Layout from '@/components/Layout';
-import { ContentItem } from '@/lib/content';
+import { ClientContentItem } from '@/lib/content';
 
 const StyledTagPage = styled.main`
   max-width: 1000px;
@@ -65,7 +65,7 @@ const StyledTagPage = styled.main`
 
 interface TagPageProps {
   tag: string;
-  posts: ContentItem[];
+  posts: ClientContentItem[];
 }
 
 const TagPage: React.FC<TagPageProps> = ({ tag, posts }) => {

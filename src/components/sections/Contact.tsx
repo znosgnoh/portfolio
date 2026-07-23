@@ -59,13 +59,13 @@ const Contact: React.FC = () => {
   return (
     <StyledContactSection id="contact" ref={revealContainer}>
       <h2 className="numbered-heading overline">What&apos;s Next?</h2>
-      <h2 className="title">Get In Touch</h2>
+      <h2 className="title">Contact me</h2>
       <p>
-        Although I&apos;m not currently looking for any new opportunities, my inbox is always open.
-        Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
+        Whether you want to talk code, triathlon training, photography, or travel plans — my inbox is
+        open. Drop a line and I&apos;ll do my best to get back to you!
       </p>
       <a className="email-link" href={`mailto:${email}`}>
-        Say Hello
+        Contact me
       </a>
     </StyledContactSection>
   );

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
 import styled from 'styled-components';
 import { srConfig } from '@/config';
 import { usePrefersReducedMotion } from '@/hooks';
 import { Icon } from '@/components/icons';
-import { ContentItem } from '@/lib/content';
+import { ClientContentItem } from '@/lib/content';
+import SafeImage from '@/components/SafeImage';
 
 const StyledProjectsGrid = styled.ul`
   ${({ theme }) => theme.mixins.resetList};
@@ -126,7 +126,7 @@ const StyledProject = styled.li`
 `;
 
 interface FeaturedProps {
-  projects: ContentItem[];
+  projects: ClientContentItem[];
 }
 
 const Featured: React.FC<FeaturedProps> = ({ projects }) => {
@@ -181,15 +181,15 @@ const Featured: React.FC<FeaturedProps> = ({ projects }) => {
 
               <div className="project-image">
                 <a href={external || github || '#'}>
-                  {cover && (
-                    <Image
-                      src={`/images/featured/${cover}`}
-                      alt={title || ''}
-                      width={700}
-                      height={438}
-                      className="img"
-                    />
-                  )}
+                  <SafeImage
+                    src={cover ? `/images/featured/${cover.replace(/^\.\//, '')}` : null}
+                    alt={title || 'Featured project'}
+                    width={700}
+                    height={438}
+                    sizes="(max-width: 768px) 100vw, 60vw"
+                    className="img"
+                    placeholderLabel={title || 'Project'}
+                  />
                 </a>
               </div>
             </StyledProject>

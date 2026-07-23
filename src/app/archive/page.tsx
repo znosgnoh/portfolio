@@ -1,4 +1,4 @@
-import { getProjects } from '@/lib/content';
+import { getProjects, toClientContent } from '@/lib/content';
 import ArchivePage from './ArchivePage';
 
 export const metadata = {
@@ -9,5 +9,5 @@ export const metadata = {
 export default async function Archive() {
   const projects = await getProjects();
 
-  return <ArchivePage projects={JSON.parse(JSON.stringify(projects))} />;
+  return <ArchivePage projects={projects.map(toClientContent)} />;
 }

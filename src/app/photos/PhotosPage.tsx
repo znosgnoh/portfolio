@@ -2,9 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import styled from 'styled-components';
 import Layout from '@/components/Layout';
+import SafeImage from '@/components/SafeImage';
 
 const StyledMainContainer = styled.main`
   & > header {
@@ -33,7 +33,10 @@ const StyledAlbumCard = styled.div`
   .album-cover {
     position: relative;
     width: 100%;
-    height: 200px;
+    /* 3:2 cover — matches typical photo album thumbnails */
+    aspect-ratio: 3 / 2;
+    height: auto;
+    min-height: 200px;
     background-color: var(--lightest-navy);
   }
 
@@ -92,27 +95,35 @@ const PhotosPage: React.FC<PhotosPageProps> = ({ albums }) => {
           </p>
         ) : (
           <StyledAlbumGrid>
-            {albums.map(album => (
-              <Link key={album.id} href={`/photos/${album.slug}`}>
-                <StyledAlbumCard>
-                  <div className="album-cover">
-                    {album.photos[0] && (
-                      <Image
-                        src={album.photos[0].thumbnailUrl || album.photos[0].url}
-                        alt={album.name}
+            {albums.map(album => {
+              const cover = album.photos[0];
+              const coverSrc = cover?.thumbnailUrl || cover?.url || null;
+
+              return (
+                <Link key={album.id} href={`/photos/${album.slug}`}>
+                  <StyledAlbumCard>
+                    <div className="album-cover">
+                      <SafeImage
+                        src={coverSrc}
+                        alt={cover?.title || `${album.name} cover`}
                         fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
                         style={{ objectFit: 'cover' }}
+                        placeholderLabel={album.name}
                       />
-                    )}
-                  </div>
-                  <div className="album-info">
-                    <h3>{album.name}</h3>
-                    {album.description && <p>{album.description}</p>}
-                    <span className="photo-count">{album.photos.length} photos</span>
-                  </div>
-                </StyledAlbumCard>
-              </Link>
-            ))}
+                    </div>
+                    <div className="album-info">
+                      <h3>{album.name}</h3>
+                      {album.description && <p>{album.description}</p>}
+                      <span className="photo-count">
+                        {album.photos.length}{' '}
+                        {album.photos.length === 1 ? 'photo' : 'photos'}
+                      </span>
+                    </div>
+                  </StyledAlbumCard>
+                </Link>
+              );
+            })}
           </StyledAlbumGrid>
         )}
       </StyledMainContainer>

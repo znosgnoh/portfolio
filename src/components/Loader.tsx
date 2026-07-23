@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import anime from 'animejs';
+import { createTimeline, createDrawable } from 'animejs';
 import { IconLoader } from '@/components/icons';
 
 const StyledLoader = styled.div`
@@ -29,8 +29,10 @@ const StyledLoader = styled.div`
       margin: 0 auto;
       fill: none;
       user-select: none;
-      #B {
+      #N {
         opacity: 0;
+        transform-box: view-box;
+        transform-origin: 50px 50px;
       }
     }
   }
@@ -44,45 +46,58 @@ const Loader: React.FC<LoaderProps> = ({ finishLoading }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   const animate = () => {
-    const loader = anime.timeline({
-      complete: () => finishLoading(),
+    const drawable = createDrawable('#logo #hex');
+    const start = 300;
+    const duration = 1600;
+
+    const loader = createTimeline({
+      defaults: { ease: 'inOutQuart' },
+      onComplete: () => finishLoading(),
     });
 
+    // Hex paint + N spin/fade run together and finish at the same time
     loader
-      .add({
-        targets: '#logo path',
-        delay: 300,
-        duration: 1500,
-        easing: 'easeInOutQuart',
-        strokeDashoffset: [anime.setDashoffset, 0],
-      })
-      .add({
-        targets: '#logo #B',
-        duration: 700,
-        easing: 'easeInOutQuart',
-        opacity: 1,
-      })
-      .add({
-        targets: '#logo',
-        delay: 500,
-        duration: 300,
-        easing: 'easeInOutQuart',
-        opacity: 0,
-        scale: 0.1,
-      })
-      .add({
-        targets: '.loader',
-        duration: 200,
-        easing: 'easeInOutQuart',
-        opacity: 0,
-        zIndex: -1,
-      });
+      .add(
+        drawable,
+        {
+          draw: ['0 0', '0 1'],
+          duration,
+        },
+        start
+      )
+      .add(
+        '#logo #N',
+        {
+          opacity: { from: 0, to: 1 },
+          rotate: { from: '0turn', to: '1turn' },
+          duration,
+          ease: 'inOutCubic',
+        },
+        start
+      )
+      .add(
+        '#logo',
+        {
+          opacity: 0,
+          scale: 0.1,
+          duration: 300,
+        },
+        start + duration + 400
+      )
+      .add(
+        '.loader',
+        {
+          opacity: 0,
+          zIndex: -1,
+          duration: 200,
+        },
+        '<'
+      );
   };
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsMounted(true);
-      // Small delay to ensure DOM is painted before animating
       requestAnimationFrame(() => animate());
     }, 10);
     return () => clearTimeout(timeout);

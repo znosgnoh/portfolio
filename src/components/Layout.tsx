@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import Nav from './Nav';
 import Social from './Social';
 import Email from './Email';
 import Footer from './Footer';
-import Loader from './Loader';
 import { usePrefersReducedMotion } from '@/hooks';
+
+const Loader = dynamic(() => import('./Loader'), { ssr: false });
 
 const StyledContent = styled.div`
   display: flex;

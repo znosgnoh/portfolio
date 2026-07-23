@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, createRef } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -72,12 +72,13 @@ const StyledNav = styled.nav`
       &:hover,
       &:focus {
         svg {
-          fill: var(--green-tint);
+          opacity: 0.7;
         }
       }
 
       svg {
         fill: none;
+        stroke: currentColor;
         transition: var(--transition);
         user-select: none;
       }
@@ -131,6 +132,9 @@ const Nav: React.FC = () => {
   const scrollDirection = useScrollDirection();
   const [scrolledToTop, setScrolledToTop] = useState(true);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const logoRef = useRef<HTMLDivElement>(null);
+  const resumeRef = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef(navLinks.map(() => createRef<HTMLLIElement>()));
 
   const handleScroll = () => {
     setScrolledToTop(window.scrollY < 50);
@@ -148,7 +152,7 @@ const Nav: React.FC = () => {
       clearTimeout(timeout);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   const timeout = prefersReducedMotion ? 0 : loaderDelay;
 
@@ -163,10 +167,12 @@ const Nav: React.FC = () => {
           ) : (
             <TransitionGroup component={null}>
               {isMounted && (
-                <CSSTransition classNames="fade" timeout={timeout}>
-                  <Link href="/" aria-label="home">
-                    <Icon name="Logo" />
-                  </Link>
+                <CSSTransition nodeRef={logoRef} classNames="fade" timeout={timeout}>
+                  <div ref={logoRef}>
+                    <Link href="/" aria-label="home">
+                      <Icon name="Logo" />
+                    </Link>
+                  </div>
                 </CSSTransition>
               )}
             </TransitionGroup>
@@ -187,8 +193,14 @@ const Nav: React.FC = () => {
               <TransitionGroup component={null}>
                 {isMounted &&
                   navLinks.map(({ url, name }, i) => (
-                    <CSSTransition key={i} classNames="fadedown" timeout={timeout}>
-                      <li key={i} style={{ transitionDelay: `${(i + 1) * 100}ms` }}>
+                    <CSSTransition
+                      key={i}
+                      nodeRef={linkRefs.current[i]}
+                      classNames="fadedown"
+                      timeout={timeout}>
+                      <li
+                        ref={linkRefs.current[i]}
+                        style={{ transitionDelay: `${(i + 1) * 100}ms` }}>
                         <Link href={url}>{name}</Link>
                       </li>
                     </CSSTransition>
@@ -204,9 +216,15 @@ const Nav: React.FC = () => {
           ) : (
             <TransitionGroup component={null}>
               {isMounted && (
-                <CSSTransition classNames="fadedown" timeout={timeout}>
-                  <div style={{ transitionDelay: `${(navLinks.length + 1) * 100}ms` }}>
-                    <a className="resume-button" href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+                <CSSTransition nodeRef={resumeRef} classNames="fadedown" timeout={timeout}>
+                  <div
+                    ref={resumeRef}
+                    style={{ transitionDelay: `${(navLinks.length + 1) * 100}ms` }}>
+                    <a
+                      className="resume-button"
+                      href="/resume.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer">
                       Resume
                     </a>
                   </div>

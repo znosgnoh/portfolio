@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, createRef, type RefObject } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { srConfig } from '@/config';
 import { usePrefersReducedMotion } from '@/hooks';
 import { Icon } from '@/components/icons';
-import { ContentItem } from '@/lib/content';
+import { ClientContentItem } from '@/lib/content';
 
 const StyledProjectsSection = styled.section`
   display: flex;
@@ -85,7 +85,7 @@ const StyledProject = styled.li`
 `;
 
 interface ProjectsProps {
-  projects: ContentItem[];
+  projects: ClientContentItem[];
 }
 
 const Projects: React.FC<ProjectsProps> = ({ projects }) => {
@@ -93,6 +93,10 @@ const Projects: React.FC<ProjectsProps> = ({ projects }) => {
   const revealTitle = useRef<HTMLHeadingElement>(null);
   const revealArchiveLink = useRef<HTMLAnchorElement>(null);
   const revealProjects = useRef<(HTMLLIElement | null)[]>([]);
+  const projectNodeRefs = useMemo<RefObject<HTMLLIElement | null>[]>(
+    () => projects.map(() => createRef<HTMLLIElement>()),
+    [projects]
+  );
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -112,7 +116,7 @@ const Projects: React.FC<ProjectsProps> = ({ projects }) => {
   const firstSix = projects.slice(0, GRID_LIMIT);
   const projectsToShow = showMore ? projects : firstSix;
 
-  const projectInner = (project: ContentItem) => {
+  const projectInner = (project: ClientContentItem) => {
     const { frontmatter, html } = project;
     const { github, external, title, tech } = frontmatter;
 
@@ -156,15 +160,28 @@ const Projects: React.FC<ProjectsProps> = ({ projects }) => {
           </>
         ) : (
           <TransitionGroup component={null}>
-            {projectsToShow.map((project, i) => (
-              <CSSTransition key={i} classNames="fadeup" timeout={i >= GRID_LIMIT ? (i - GRID_LIMIT) * 300 : 300} exit={false}>
-                <StyledProject
-                  ref={el => { revealProjects.current[i] = el; }}
-                  style={{ transitionDelay: `${i >= GRID_LIMIT ? (i - GRID_LIMIT) * 100 : 0}ms` }}>
-                  {projectInner(project)}
-                </StyledProject>
-              </CSSTransition>
-            ))}
+            {projectsToShow.map((project, i) => {
+              const nodeRef = projectNodeRefs[i];
+              return (
+                <CSSTransition
+                  key={project.slug || i}
+                  nodeRef={nodeRef}
+                  classNames="fadeup"
+                  timeout={i >= GRID_LIMIT ? (i - GRID_LIMIT) * 300 : 300}
+                  exit={false}>
+                  <StyledProject
+                    ref={el => {
+                      nodeRef.current = el;
+                      revealProjects.current[i] = el;
+                    }}
+                    style={{
+                      transitionDelay: `${i >= GRID_LIMIT ? (i - GRID_LIMIT) * 100 : 0}ms`,
+                    }}>
+                    {projectInner(project)}
+                  </StyledProject>
+                </CSSTransition>
+              );
+            })}
           </TransitionGroup>
         )}
       </ul>

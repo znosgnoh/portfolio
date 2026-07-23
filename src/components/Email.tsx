@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { email } from '@/config';
@@ -58,6 +58,7 @@ const StyledLinkWrapper = styled.div`
 const Email: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const nodeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -66,7 +67,7 @@ const Email: React.FC = () => {
     }
     const timeout = setTimeout(() => setIsMounted(true), loaderDelay);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <StyledSideElement>
@@ -77,8 +78,8 @@ const Email: React.FC = () => {
       ) : (
         <TransitionGroup component={null}>
           {isMounted && (
-            <CSSTransition classNames="fade" timeout={loaderDelay}>
-              <StyledLinkWrapper>
+            <CSSTransition nodeRef={nodeRef} classNames="fade" timeout={loaderDelay}>
+              <StyledLinkWrapper ref={nodeRef}>
                 <a href={`mailto:${email}`}>{email}</a>
               </StyledLinkWrapper>
             </CSSTransition>

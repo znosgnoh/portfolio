@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import Layout from '@/components/Layout';
-import { ContentItem } from '@/lib/content';
+import { ClientContentItem } from '@/lib/content';
 
 const StyledMainContainer = styled.main`
   & > header {
@@ -72,7 +72,7 @@ const StyledPostList = styled.ul`
 `;
 
 interface PensievePageProps {
-  posts: ContentItem[];
+  posts: ClientContentItem[];
   tags: Record<string, number>;
 }
 
